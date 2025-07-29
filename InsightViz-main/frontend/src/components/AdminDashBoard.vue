@@ -4,31 +4,36 @@
     <aside class="sidebar">
       <h2 class="logo">InsightViz</h2>
 
-      <!-- PROFIL + NOTIFICATIONS -->
-      <div class="profile-section" @click="toggleProfileMenu" tabindex="0" @blur="closeProfileMenu">
-        <!-- NOTIFICATION ICON -->
-        <div class="notification-wrapper" @click.stop="toggleNotification" tabindex="0">
-          <font-awesome-icon icon="bell" class="notification-icon" />
-          <span v-if="hasNotifications" class="notification-badge"></span>
-          <div v-if="notificationOpen" class="notification-dropdown" @mousedown.prevent>
-            <p class="notif-text">Pas de nouvelles notifications.</p>
-          </div>
-        </div>
+    <!-- PROFIL + MENU -->
+<div class="profile-section" @click="toggleProfileMenu" tabindex="0" @blur="closeProfileMenu">
+  <!-- AVATAR -->
+  <img :src="user.avatar" alt="Avatar" class="avatar" />
 
-        <!-- AVATAR -->
-        <img :src="user.avatar" alt="Avatar" class="avatar" />
+  <!-- INFO -->
+  <div class="user-info">
+    <p class="user-name">{{ user.name }}</p>
+    <small class="user-role">{{ user.role }}</small>
+  </div>
 
-        <div class="user-info">
-          <p class="user-name">{{ user.name }}</p>
-          <small class="user-role">{{ user.role }}</small>
-        </div>
+  <!-- MENU PROFIL AVEC NOTIFICATION -->
+  <div v-if="profileMenuOpen" class="profile-menu" @mousedown.prevent>
+    <button @click="changePage('profil')">Profil</button>
 
-        <div v-if="profileMenuOpen" class="profile-menu" @mousedown.prevent>
-          <button @click="changePage('profil')">Profil</button>
-          <button @click="changePage('parametres')">Paramètres</button>
-          <button class="logout-btn" @click="logout">Déconnexion</button>
-        </div>
-      </div>
+    <!-- NOTIFICATION (remplace Paramètres) -->
+    <button @click.stop="toggleNotification">
+      <font-awesome-icon icon="bell" class="notification-icon" />
+      Notifications
+    </button>
+
+    <!-- DROPDOWN NOTIFICATION -->
+    <div v-if="notificationOpen" class="notification-dropdown" @mousedown.prevent>
+      <p class="notif-text">Pas de nouvelles notifications.</p>
+    </div>
+
+    <button class="logout-btn" @click="logout">Déconnexion</button>
+  </div>
+</div>
+  
 
 
   <!-- BOUTONS PARAMÈTRE -->
@@ -63,36 +68,42 @@
     
     <!-- CONTENU PRINCIPAL -->
     <main class="content">
-      <h1 class="dash-title">Admin - {{ currentPage }}</h1>
+      
 
-    <!-- BARRE DE RECHERCHE AVEC ICÔNE ANATY INPUT -->
-<div class="search-bar">
-  <div class="search-wrapper">
-    <font-awesome-icon icon="search" class="icon-search" />
-    <input
-      type="text"
-      v-model="searchQuery"
-      placeholder="Rechercher..."
-      class="search-input"
-    />
+
+  <!-- DASHBOARD -->
+<div v-if="currentPage === 'dashboard'">
+  <div class="dash-title-bar">
+    <h2 class="dash-title">Tableau de bord</h2>
+
+    <!-- RECHERCHE -->
+    <div class="search-bar">
+      <div class="search-wrapper">
+        <font-awesome-icon icon="search" class="icon-search" />
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Rechercher..."
+          class="search-input"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Section -->
+  <div class="kpi-row">
+    <div class="kpi-card"><h3>{{ stats.enquetes }}</h3><p>Enquêtes</p></div>
+    <div class="kpi-card"><h3>{{ stats.reponses }}</h3><p>Réponses</p></div>
+    <div class="kpi-card"><h3>{{ stats.campagnes }}</h3><p>Campagnes</p></div>
+    <div class="kpi-card"><h3>{{ stats.utilisateurs }}</h3><p>Utilisateurs</p></div>
+  </div>
+
+  <div class="chart-wrapper">
+    <canvas id="enqueteChart"></canvas>
   </div>
 </div>
 
 
-
-
-      <!-- DASHBOARD -->
-      <div v-if="currentPage === 'dashboard'">
-        <div class="kpi-row">
-          <div class="kpi-card"><h3>{{ stats.enquetes }}</h3><p>Enquêtes</p></div>
-          <div class="kpi-card"><h3>{{ stats.reponses }}</h3><p>Réponses</p></div>
-          <div class="kpi-card"><h3>{{ stats.campagnes }}</h3><p>Campagnes</p></div>
-          <div class="kpi-card"><h3>{{ stats.utilisateurs }}</h3><p>Utilisateurs</p></div>
-        </div>
-        <div class="chart-wrapper">
-          <canvas id="enqueteChart"></canvas>
-        </div>
-      </div>
 
       <!-- AUTRES PAGES -->
       <div v-else-if="currentPage === 'enquete'">
@@ -133,7 +144,7 @@ const currentPage = ref('dashboard')
 const profileMenuOpen = ref(false)
 
 const user = reactive({
-  name: 'John Doe',
+  name: 'Mara',
   avatar: 'https://i.pravatar.cc/40',
   role: 'Admin'
 })
@@ -330,10 +341,22 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: background 0.2s ease;
   color: #6a11cb;
+
+  display: flex;               /* pour aligner icône + texte */
+  align-items: center;
+  gap: 0.5rem;                 /* elanelana kely */
+  font-size: 0.95rem;
 }
+
 .profile-menu button:hover {
   background-color: #f0eaff;
 }
+
+.profile-menu .notification-icon {
+  font-size: 1rem;
+  color: #6a11cb; /* mitovy amin’ny texte */
+}
+
 
 /* LOGOUT BUTTON */
 .logout-btn {
@@ -400,20 +423,6 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   transition: margin-left 0.3s ease;
-}
-
-/* TITLE */
-.dash-title {
-  margin-bottom: 1.5rem;
-  color: #2c3e50;
-  text-align: center;
-  font-size: 2.2rem;
-  font-weight: 600;
-  border-bottom: 2px solid #6a11cb;
-  padding-bottom: 0.5rem;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* KPI ROW */
@@ -509,38 +518,45 @@ onBeforeUnmount(() => {
   }
 }
 
+/* Container de titre sy recherche amin'ny laharana iray */
+.dash-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px; /* ↓ Espace ambany ahena */
+  padding: 5px 0;       /* ↓ Padding ambony sy ambany kely fotsiny */
+}
+
+
+/* Ny barre de recherche dia mandeha amin'ny ilany havanana */
 .search-bar {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1.5rem;
+  justify-content: flex-end;
 }
 
 .search-wrapper {
   position: relative;
-  width: 300px;
-  max-width: 90%;
+  width: 250px;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  padding: 8px 8px 8px 32px;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #333;
 }
 
 .icon-search {
   position: absolute;
   top: 50%;
-  left: 0.8rem;
+  left: 10px;
   transform: translateY(-50%);
-  color: #555 !important;
-  font-size: 1.1rem;
+  color: #333;
   pointer-events: none;
-  z-index: 2;
-  opacity: 1;
 }
+
 
 
 .notification-wrapper {

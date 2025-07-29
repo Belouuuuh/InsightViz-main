@@ -26,7 +26,7 @@ library.add(
   faBullhorn,
   faUserCheck,
   faBell,
-  faSearch
+  faSearch,
 )
 
 // 🔽 Création de l'app
