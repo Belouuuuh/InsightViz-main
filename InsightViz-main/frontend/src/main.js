@@ -3,10 +3,10 @@ import App from './App.vue'
 import router from './router/index.js'
 import './style.css'
 
+
 // 🔽 Import Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import {
   faChartLine,
   faUser,
@@ -14,7 +14,13 @@ import {
   faCheckCircle,
   faBullhorn,
   faUserCheck,
-  faBell
+  faBell,
+  faSearch,
+  faSignOutAlt,
+  faTrash,
+  faEye,
+  faStar,
+  faUserFriends,
 } from '@fortawesome/free-solid-svg-icons'
 
 // 🔽 Ajouter les icônes dans la librairie
@@ -27,6 +33,11 @@ library.add(
   faUserCheck,
   faBell,
   faSearch,
+  faSignOutAlt,
+  faTrash,
+  faEye,
+  faStar,
+  faUserFriends
 )
 
 // 🔽 Création de l'app

@@ -6,7 +6,7 @@
         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
         </svg>
-        Créer une campagne
+        <span class="btn-text">Créer une campagne</span>
       </button>
     </div>
 
@@ -164,75 +164,151 @@
       </div>
     </div>
 
-    <!-- Tableau des campagnes -->
-    <div class="table-container">
-      <table class="campaigns-table">
-        <thead>
-          <tr>
-            <th>Nom de la campagne</th>
-            <th>Type</th>
-            <th>Période</th>
-            <th>Responsable</th>
-            <th>Budget</th>
-            <th>Statut</th>
-            <th>Enquêtes liées</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="campaign in filteredCampaigns" :key="campaign.id" class="table-row">
-            <td>
-              <div class="campaign-info">
-                <h4>{{ campaign.nom }}</h4>
-                <p v-if="campaign.description">{{ campaign.description }}</p>
-              </div>
-            </td>
-            <td>
+    <!-- Version desktop : Tableau des campagnes -->
+    <div class="desktop-view">
+      <div class="table-container">
+        <table class="campaigns-table">
+          <thead>
+            <tr>
+              <th>Nom de la campagne</th>
+              <th>Type</th>
+              <th>Période</th>
+              <th>Responsable</th>
+              <th>Budget</th>
+              <th>Statut</th>
+              <th>Enquêtes liées</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="campaign in filteredCampaigns" :key="campaign.id" class="table-row">
+              <td>
+                <div class="campaign-info">
+                  <h4>{{ campaign.nom }}</h4>
+                  <p v-if="campaign.description">{{ campaign.description }}</p>
+                </div>
+              </td>
+              <td>
+                <span class="type-badge" :class="getTypeBadgeClass(campaign.type)">
+                  {{ campaign.type }}
+                </span>
+              </td>
+              <td>
+                <div class="period-info">
+                  <div v-if="campaign.dateDebut">
+                    <strong>Début:</strong> {{ formatDate(campaign.dateDebut) }}
+                  </div>
+                  <div v-if="campaign.dateFin">
+                    <strong>Fin:</strong> {{ formatDate(campaign.dateFin) }}
+                  </div>
+                  <div v-if="!campaign.dateDebut && !campaign.dateFin" class="no-period">
+                    Non définie
+                  </div>
+                </div>
+              </td>
+              <td>{{ campaign.responsable || 'Non assigné' }}</td>
+              <td>
+                <span v-if="campaign.budget" class="budget">{{ formatBudget(campaign.budget) }} €</span>
+                <span v-else class="no-budget">N/A</span>
+              </td>
+              <td>
+                <span class="status-badge" :class="campaign.statut.toLowerCase().replace(' ', '-')">
+                  {{ campaign.statut }}
+                </span>
+              </td>
+              <td>{{ campaign.enquetesLiees }}</td>
+              <td>
+                <div class="action-buttons">
+                  <button @click="editCampaign(campaign)" class="action-btn edit" title="Modifier">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </button>
+                  <button @click="deleteCampaign(campaign.id)" class="action-btn delete" title="Supprimer">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Version mobile : Cartes -->
+    <div class="mobile-view">
+      <div class="campaigns-cards">
+        <div v-for="campaign in filteredCampaigns" :key="campaign.id" class="campaign-card">
+          <div class="card-header">
+            <div class="campaign-info">
+              <h4>{{ campaign.nom }}</h4>
               <span class="type-badge" :class="getTypeBadgeClass(campaign.type)">
                 {{ campaign.type }}
               </span>
-            </td>
-            <td>
-              <div class="period-info">
-                <div v-if="campaign.dateDebut">
-                  <strong>Début:</strong> {{ formatDate(campaign.dateDebut) }}
-                </div>
-                <div v-if="campaign.dateFin">
-                  <strong>Fin:</strong> {{ formatDate(campaign.dateFin) }}
-                </div>
-                <div v-if="!campaign.dateDebut && !campaign.dateFin" class="no-period">
-                  Non définie
+            </div>
+            <div class="card-actions">
+              <button @click="editCampaign(campaign)" class="action-btn edit" title="Modifier">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button @click="deleteCampaign(campaign.id)" class="action-btn delete" title="Supprimer">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <div v-if="campaign.description" class="campaign-description">
+              {{ campaign.description }}
+            </div>
+            
+            <div class="card-details">
+              <div class="detail-item">
+                <span class="detail-label">Période:</span>
+                <div class="period-info">
+                  <div v-if="campaign.dateDebut">
+                    <strong>Début:</strong> {{ formatDate(campaign.dateDebut) }}
+                  </div>
+                  <div v-if="campaign.dateFin">
+                    <strong>Fin:</strong> {{ formatDate(campaign.dateFin) }}
+                  </div>
+                  <div v-if="!campaign.dateDebut && !campaign.dateFin" class="no-period">
+                    Non définie
+                  </div>
                 </div>
               </div>
-            </td>
-            <td>{{ campaign.responsable || 'Non assigné' }}</td>
-            <td>
-              <span v-if="campaign.budget" class="budget">{{ formatBudget(campaign.budget) }} €</span>
-              <span v-else class="no-budget">N/A</span>
-            </td>
-            <td>
-              <span class="status-badge" :class="campaign.statut.toLowerCase().replace(' ', '-')">
-                {{ campaign.statut }}
-              </span>
-            </td>
-            <td>{{ campaign.enquetesLiees }}</td>
-            <td>
-              <div class="action-buttons">
-                <button @click="editCampaign(campaign)" class="action-btn edit" title="Modifier">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                  </svg>
-                </button>
-                <button @click="deleteCampaign(campaign.id)" class="action-btn delete" title="Supprimer">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                  </svg>
-                </button>
+              
+              <div class="detail-item">
+                <span class="detail-label">Responsable:</span>
+                <span class="detail-value">{{ campaign.responsable || 'Non assigné' }}</span>
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              
+              <div class="detail-item">
+                <span class="detail-label">Budget:</span>
+                <span v-if="campaign.budget" class="budget detail-value">{{ formatBudget(campaign.budget) }} €</span>
+                <span v-else class="no-budget detail-value">N/A</span>
+              </div>
+              
+              <div class="detail-item">
+                <span class="detail-label">Statut:</span>
+                <span class="status-badge" :class="campaign.statut.toLowerCase().replace(' ', '-')">
+                  {{ campaign.statut }}
+                </span>
+              </div>
+              
+              <div class="detail-item">
+                <span class="detail-label">Enquêtes liées:</span>
+                <span class="detail-value">{{ campaign.enquetesLiees }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -432,6 +508,7 @@ const deleteCampaign = (campaignId: number) => {
 <style scoped>
 .campaigns {
   max-width: 1200px;
+  padding: 1rem;
 }
 
 .page-header {
@@ -439,6 +516,8 @@ const deleteCampaign = (campaignId: number) => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .page-header h2 {
@@ -460,6 +539,7 @@ const deleteCampaign = (campaignId: number) => {
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .primary-btn:hover {
@@ -469,6 +549,7 @@ const deleteCampaign = (campaignId: number) => {
 .btn-icon {
   width: 18px;
   height: 18px;
+  flex-shrink: 0;
 }
 
 .form-modal {
@@ -517,6 +598,11 @@ const deleteCampaign = (campaignId: number) => {
   color: #6b7280;
   padding: 0.25rem;
   border-radius: 4px;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-btn:hover {
@@ -529,7 +615,7 @@ const deleteCampaign = (campaignId: number) => {
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -574,6 +660,7 @@ const deleteCampaign = (campaignId: number) => {
   justify-content: flex-end;
   padding-top: 2rem;
   border-top: 1px solid #e5e7eb;
+  flex-wrap: wrap;
 }
 
 .secondary-btn {
@@ -585,6 +672,7 @@ const deleteCampaign = (campaignId: number) => {
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .secondary-btn:hover {
@@ -601,7 +689,7 @@ const deleteCampaign = (campaignId: number) => {
 .search-bar {
   position: relative;
   flex: 1;
-  min-width: 300px;
+  min-width: 280px;
 }
 
 .search-icon {
@@ -631,6 +719,7 @@ const deleteCampaign = (campaignId: number) => {
 .filters {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .filter-select {
@@ -642,16 +731,27 @@ const deleteCampaign = (campaignId: number) => {
   min-width: 150px;
 }
 
+/* Version Desktop */
+.desktop-view {
+  display: block;
+}
+
+.mobile-view {
+  display: none;
+}
+
 .table-container {
   background: white;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 }
 
 .campaigns-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 1000px;
 }
 
 .campaigns-table th {
@@ -661,6 +761,7 @@ const deleteCampaign = (campaignId: number) => {
   font-weight: 600;
   color: #374151;
   border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
 }
 
 .table-row {
@@ -689,11 +790,81 @@ const deleteCampaign = (campaignId: number) => {
   color: #6b7280;
 }
 
+/* Version Mobile - Cartes */
+.campaigns-cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.campaign-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.card-header .campaign-info {
+  flex: 1;
+}
+
+.card-header .campaign-info h4 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 1.125rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.campaign-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.card-details {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #374151;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  color: #6b7280;
+}
+
+/* Badges et statuts */
 .type-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
+  display: inline-block;
 }
 
 .type-badge.satisfaction {
@@ -758,6 +929,7 @@ const deleteCampaign = (campaignId: number) => {
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
+  display: inline-block;
 }
 
 .status-badge.planifiée {
@@ -791,6 +963,9 @@ const deleteCampaign = (campaignId: number) => {
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn svg {
@@ -816,35 +991,144 @@ const deleteCampaign = (campaignId: number) => {
   background-color: #fecaca;
 }
 
-@media (max-width: 767px) {
+/* Media Queries pour la responsivité */
+@media (max-width: 1024px) {
+  .campaigns {
+    padding: 0.5rem;
+  }
+  
+  .page-header h2 {
+    font-size: 1.75rem;
+  }
+  
+  .search-bar {
+    min-width: 240px;
+  }
+  
+  .form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .campaigns {
+    padding: 0.5rem;
+  }
+
   .page-header {
     flex-direction: column;
-    gap: 1rem;
     align-items: stretch;
+  }
+  
+  .page-header h2 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .primary-btn {
+    justify-content: center;
+  }
+  
+  .btn-text {
+    display: none;
   }
   
   .search-filters {
     flex-direction: column;
+    gap: 0.75rem;
   }
   
   .search-bar {
     min-width: auto;
   }
   
+  .filters {
+    justify-content: stretch;
+  }
+  
+  .filter-select {
+    flex: 1;
+    min-width: auto;
+  }
+  
+  .form-container {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+  }
+  
+  .form-header {
+    padding: 1rem;
+  }
+  
+  .campaign-form {
+    padding: 1rem;
+  }
+  
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
   .form-actions {
     flex-direction: column;
+    gap: 0.75rem;
   }
   
-  .table-container {
-    overflow-x: auto;
+  .form-actions button {
+    width: 100%;
+  }
+
+  /* Basculer vers la vue mobile */
+  .desktop-view {
+    display: none;
   }
   
-  .campaigns-table {
-    min-width: 1000px;
+  .mobile-view {
+    display: block;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .card-actions {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .campaigns {
+    padding: 0.25rem;
+  }
+  
+  .page-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .campaign-card {
+    padding: 1rem;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .detail-label {
+    min-width: auto;
+    font-size: 0.875rem;
+  }
+  
+  .form-modal {
+    padding: 0;
+  }
+  
+  .form-container {
+    margin: 0;
+    border-radius: 0;
+    height: 100vh;
   }
 }
 </style>
