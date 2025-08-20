@@ -2,7 +2,13 @@
   <div class="layout-container flex">
     <!-- === SIDEBAR === -->
     <div :class="['sidebar w-64 h-screen fixed z-50 bg-gray-900 text-white', { collapsed: isCollapsed }]">
-      
+      <!-- Toggle button -->
+      <button @click="toggleSidebar" class="sidebar-toggle">
+        <Bars3Icon v-if="!isCollapsed" class="toggle-icon" />
+        <XMarkIcon v-else class="toggle-icon" />
+      </button>
+
+
       <!-- Logo Section -->
       <div class="logo-section">
         <div class="logo">
@@ -111,6 +117,7 @@
       <ResponsePage v-else-if="currentPage === 'response'" />
       <CampaignPage v-else-if="currentPage === 'campaign'" />
       <PersonPage v-else-if="currentPage === 'person'" />
+      <EmployeeScoring v-else-if="currentPage === 'employee'" />
     </main>
   </div>
 </template>
@@ -121,13 +128,17 @@ import SurveyPage from '../components/SurveyPage.vue'
 import CampaignPage from '../components/CampaignPage.vue'
 import PersonPage from '../components/PersonPage.vue'
 import ResponsePage from '../components/ResponsePage.vue'
+import EmployeeScoring from './EmployeeScoring.vue'
 import {
   UserCircleIcon,
   UserIcon,
   ClipboardDocumentListIcon,
   ChatBubbleLeftRightIcon,
   MegaphoneIcon,
-  UsersIcon
+  UsersIcon,
+  StarIcon,
+  Bars3Icon,
+  XMarkIcon
 } from '@heroicons/vue/24/outline'
 import { ref, onMounted, onUnmounted } from 'vue'
 
@@ -154,11 +165,13 @@ const teamMembers = ref([
 ])
 
 const menuItems = [
-  { name: 'profil', label: 'Utilisateur', icon: UserIcon },
-  { name: 'person', label: 'Personne', icon: UsersIcon },
+  { name: 'profil', label: 'Profil', icon: UserIcon },
+  { name: 'person', label: 'Associer', icon: UsersIcon },
   { name: 'survey', label: 'Enquête', icon: ClipboardDocumentListIcon },
   { name: 'response', label: 'Réponse', icon: ChatBubbleLeftRightIcon },
-  { name: 'campaign', label: 'Campagne', icon: MegaphoneIcon }
+  { name: 'campaign', label: 'Campagne', icon: MegaphoneIcon },
+  { name: 'employee', label: 'Scoring', icon: StarIcon }
+  
 ]
 
 const changePage = (page: string) => {

@@ -879,7 +879,7 @@ onMounted(() => {
 
 .logo-subtitle {
   font-size: 1.2rem;
-  color: #6c757d;
+  color: #b4bac5;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -899,7 +899,7 @@ onMounted(() => {
 
 .hero-description p {
   font-size: 1.3rem;
-  color: #6c757d;
+  color: #484d51;
   line-height: 1.6;
 }
 
@@ -1014,7 +1014,7 @@ onMounted(() => {
 }
 
 .apropos-text p {
-  color: #6c757d;
+  color: #3b3939;
   line-height: 1.8;
   margin-bottom: 1.5rem;
   font-size: 1.1rem;
@@ -1026,7 +1026,7 @@ onMounted(() => {
 }
 
 .apropos-text li {
-  color: #6c757d;
+  color: #323435;
   margin: 0.8rem 0;
   padding-left: 1.5rem;
   position: relative;

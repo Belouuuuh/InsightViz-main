@@ -32,7 +32,11 @@
           placeholder="Rechercher un employé (nom, email, poste...)"
           class="search-input"
         />
-        <span class="search-icon">🔍</span>
+        <span class="search-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
       </div>
     </div>
 
@@ -60,35 +64,75 @@
           <tr>
             <th @click="sortBy('name')" class="sortable">
               Nom 
-              <span class="sort-icon" :class="getSortIcon('name')">⬍</span>
+              <span class="sort-icon" :class="getSortIcon('name')">
+                <svg v-if="sortColumn === 'name'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path v-if="sortDirection === 'asc'" d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
+                  <path v-else d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                </svg>
+              </span>
             </th>
             <th @click="sortBy('role')" class="sortable">
               Rôle 
-              <span class="sort-icon" :class="getSortIcon('role')">⬍</span>
+              <span class="sort-icon" :class="getSortIcon('role')">
+                <svg v-if="sortColumn === 'role'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path v-if="sortDirection === 'asc'" d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
+                  <path v-else d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                </svg>
+              </span>
             </th>
             <th @click="sortBy('position')" class="sortable">
               Poste 
-              <span class="sort-icon" :class="getSortIcon('position')">⬍</span>
+              <span class="sort-icon" :class="getSortIcon('position')">
+                <svg v-if="sortColumn === 'position'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path v-if="sortDirection === 'asc'" d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
+                  <path v-else d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                </svg>
+              </span>
             </th>
             <th @click="sortBy('email')" class="sortable">
               Email 
-              <span class="sort-icon" :class="getSortIcon('email')">⬍</span>
+              <span class="sort-icon" :class="getSortIcon('email')">
+                <svg v-if="sortColumn === 'email'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path v-if="sortDirection === 'asc'" d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
+                  <path v-else d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                </svg>
+              </span>
             </th>
             <th @click="sortBy('surveysCreated')" class="sortable">
               Enquêtes 
-              <span class="sort-icon" :class="getSortIcon('surveysCreated')">⬍</span>
+              <span class="sort-icon" :class="getSortIcon('surveysCreated')">
+                <svg v-if="sortColumn === 'surveysCreated'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path v-if="sortDirection === 'asc'" d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
+                  <path v-else d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                </svg>
+              </span>
             </th>
             <th @click="sortBy('responsesReceived')" class="sortable">
               Réponses 
-              <span class="sort-icon" :class="getSortIcon('responsesReceived')">⬍</span>
+              <span class="sort-icon" :class="getSortIcon('responsesReceived')">
+                <svg v-if="sortColumn === 'responsesReceived'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path v-if="sortDirection === 'asc'" d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
+                  <path v-else d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                </svg>
+              </span>
             </th>
             <th @click="sortBy('activeCampaigns')" class="sortable">
               Campagnes 
-              <span class="sort-icon" :class="getSortIcon('activeCampaigns')">⬍</span>
+              <span class="sort-icon" :class="getSortIcon('activeCampaigns')">
+                <svg v-if="sortColumn === 'activeCampaigns'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path v-if="sortDirection === 'asc'" d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
+                  <path v-else d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                </svg>
+              </span>
             </th>
             <th @click="sortBy('score')" class="sortable">
               Score 
-              <span class="sort-icon" :class="getSortIcon('score')">⬍</span>
+              <span class="sort-icon" :class="getSortIcon('score')">
+                <svg v-if="sortColumn === 'score'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path v-if="sortDirection === 'asc'" d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
+                  <path v-else d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                </svg>
+              </span>
             </th>
             <th>Actions</th>
           </tr>
@@ -114,10 +158,11 @@
             </td>
             <td data-label="Actions" class="actions-cell">
               <button class="action-btn view-btn" @click="viewDetails(employee)">
-                👁️ Voir
-              </button>
-              <button class="action-btn edit-btn" @click="editEmployee(employee)">
-                ✏️ Modifier
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Voir
               </button>
             </td>
           </tr>
@@ -177,7 +222,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
 interface Employee {
   id: number
@@ -197,6 +242,8 @@ const sortColumn = ref('score')
 const sortDirection = ref<'asc' | 'desc'>('desc')
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
+const loading = ref(false)
+const error = ref<string | null>(null)
 
 // Données mockées des employés
 const employees = ref<Employee[]>([
@@ -312,6 +359,34 @@ const employees = ref<Employee[]>([
   }
 ])
 
+// Fonction pour appeler l'API
+const fetchEmployees = async () => {
+  loading.value = true
+  error.value = null
+  
+  try {
+    // Remplacez cette URL par votre endpoint API réel
+    const response = await fetch('/api/employees')
+    
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`)
+    }
+    
+    const data = await response.json()
+    employees.value = data
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Erreur lors du chargement des données'
+    console.error('Erreur lors de la récupération des employés:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+// Charger les données au montage du composant
+onMounted(() => {
+  fetchEmployees()
+})
+
 // Données calculées
 const filteredEmployees = computed(() => {
   let filtered = employees.value
@@ -409,17 +484,11 @@ const viewDetails = (employee: Employee) => {
   alert(`Voir les détails de ${employee.name}`)
 }
 
-const editEmployee = (employee: Employee) => {
-  alert(`Modifier ${employee.name}`)
-}
-
 // Remise à zéro de la page lors du changement de recherche
 const resetPage = () => {
   currentPage.value = 1
 }
 
-// Watcher pour la recherche
-import { watch } from 'vue'
 watch(searchTerm, resetPage)
 </script>
 
@@ -509,8 +578,9 @@ watch(searchTerm, resetPage)
   right: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.2rem;
   color: #64748b;
+  display: flex;
+  align-items: center;
 }
 
 .controls {
@@ -578,19 +648,10 @@ watch(searchTerm, resetPage)
 
 .sort-icon {
   margin-left: 0.5rem;
-  font-size: 0.8rem;
-  opacity: 0.5;
-  transition: opacity 0.2s ease;
-}
-
-.sort-icon.asc::after {
-  content: '↑';
-  opacity: 1;
-}
-
-.sort-icon.desc::after {
-  content: '↓';
-  opacity: 1;
+  display: inline-flex;
+  align-items: center;
+  color: #64748b;
+  transition: color 0.2s ease;
 }
 
 .employees-table td {
@@ -684,6 +745,9 @@ watch(searchTerm, resetPage)
   cursor: pointer;
   font-size: 0.85rem;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .view-btn {
@@ -693,15 +757,6 @@ watch(searchTerm, resetPage)
 
 .view-btn:hover {
   background-color: #bae6fd;
-}
-
-.edit-btn {
-  background-color: #f0fdf4;
-  color: #166534;
-}
-
-.edit-btn:hover {
-  background-color: #dcfce7;
 }
 
 .pagination {

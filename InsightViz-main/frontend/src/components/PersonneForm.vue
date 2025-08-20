@@ -1,7 +1,7 @@
 <template>
   <div class="persons">
     <div class="page-header">
-      <h2>Gestion des Personnes</h2>
+      <h2>Gestion des Associées</h2>
       <button @click="showAddForm = true" class="primary-btn">
         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>

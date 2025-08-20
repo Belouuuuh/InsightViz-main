@@ -26,7 +26,7 @@
           <div class="profile-name">Admin User</div>
           <div class="profile-role">Administrateur</div>
         </div>
-        <button class="logout-btn" title="Déconnexion">
+        <button class="logout-btn" title="Déconnexion" @click="logout">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
             <polyline points="16,17 21,12 16,7"/>
@@ -184,15 +184,6 @@
               <h1>Tableau de bord</h1>
               <p>Vue d'ensemble de vos données InsightViz</p>
             </div>
-            <div class="search-container">
-              <div class="search-box">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="m21 21-4.35-4.35"/>
-                </svg>
-                <input type="text" placeholder="Rechercher..." v-model="searchQuery" />
-              </div>
-            </div>
           </div>
         </header>
 
@@ -323,18 +314,50 @@
                       stroke-width="2"
                     />
                     
-                    <!-- Points -->
+                    <!-- Points with tooltips -->
                     <g v-for="(point, index) in lineChartData.enquetes" :key="'e-' + index">
-                      <circle :cx="index * 33.33 + 16.67" :cy="200 - (point * 12.5)" r="3" fill="#7c3aed"/>
+                      <circle 
+                        :cx="index * 33.33 + 16.67" 
+                        :cy="200 - (point * 12.5)" 
+                        r="3" 
+                        fill="#7c3aed"
+                        style="cursor: pointer;"
+                        @mouseenter="showTooltip($event, point, 'Enquêtes', months[index])"
+                        @mouseleave="hideTooltip"
+                      />
                     </g>
                     <g v-for="(point, index) in lineChartData.reponses" :key="'r-' + index">
-                      <circle :cx="index * 33.33 + 16.67" :cy="200 - (point * 12.5)" r="3" fill="#f59e0b"/>
+                      <circle 
+                        :cx="index * 33.33 + 16.67" 
+                        :cy="200 - (point * 12.5)" 
+                        r="3" 
+                        fill="#f59e0b"
+                        style="cursor: pointer;"
+                        @mouseenter="showTooltip($event, point, 'Réponses', months[index])"
+                        @mouseleave="hideTooltip"
+                      />
                     </g>
                     <g v-for="(point, index) in lineChartData.campagnes" :key="'c-' + index">
-                      <circle :cx="index * 33.33 + 16.67" :cy="200 - (point * 12.5)" r="3" fill="#10b981"/>
+                      <circle 
+                        :cx="index * 33.33 + 16.67" 
+                        :cy="200 - (point * 12.5)" 
+                        r="3" 
+                        fill="#10b981"
+                        style="cursor: pointer;"
+                        @mouseenter="showTooltip($event, point, 'Campagnes', months[index])"
+                        @mouseleave="hideTooltip"
+                      />
                     </g>
                     <g v-for="(point, index) in lineChartData.utilisateurs" :key="'u-' + index">
-                      <circle :cx="index * 33.33 + 16.67" :cy="200 - (point * 12.5)" r="3" fill="#ef4444"/>
+                      <circle 
+                        :cx="index * 33.33 + 16.67" 
+                        :cy="200 - (point * 12.5)" 
+                        r="3" 
+                        fill="#ef4444"
+                        style="cursor: pointer;"
+                        @mouseenter="showTooltip($event, point, 'Utilisateurs', months[index])"
+                        @mouseleave="hideTooltip"
+                      />
                     </g>
                   </svg>
                   <div class="chart-x-labels">
@@ -370,6 +393,22 @@
         <EmployeeScoring />
       </div>
     </div>
+
+    <!-- Tooltip -->
+    <div 
+      v-if="tooltip.visible" 
+      class="chart-tooltip"
+      :style="{ 
+        left: tooltip.x + 'px', 
+        top: tooltip.y + 'px' 
+      }"
+    >
+      <div class="tooltip-content">
+        <div class="tooltip-title">{{ tooltip.category }}</div>
+        <div class="tooltip-value">{{ tooltip.value }} données</div>
+        <div class="tooltip-month">{{ tooltip.month }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -396,9 +435,18 @@ const currentPage = ref('dashboard')
 const profileMenuOpen = ref(false)
 const notificationOpen = ref(false)
 const showUserInfo = ref(false)
-const searchQuery = ref('')
 const activeMenu = ref('dashboard')
 const isSidebarCollapsed = ref(false)
+
+// Tooltip state
+const tooltip = reactive({
+  visible: false,
+  x: 0,
+  y: 0,
+  value: 0,
+  category: '',
+  month: ''
+})
 
 const toggleSidebar = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value
@@ -463,7 +511,21 @@ const toggleNotification = () => {
 const logout = () => {
   localStorage.clear()
   sessionStorage.clear()
-  router.push({ name: 'Login' })
+  router.push('/')
+}
+
+// Tooltip methods
+const showTooltip = (event, value, category, month) => {
+  tooltip.visible = true
+  tooltip.x = event.pageX + 10
+  tooltip.y = event.pageY - 10
+  tooltip.value = value
+  tooltip.category = category
+  tooltip.month = month
+}
+
+const hideTooltip = () => {
+  tooltip.visible = false
 }
 
 const stats = reactive({
@@ -629,7 +691,7 @@ const generateLinePoints = (data: number[]) => {
 /* Sidebar Styles */
 .sidebar {
   width: 280px;
-  background-color: #1e293b;
+  background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -855,7 +917,7 @@ const generateLinePoints = (data: number[]) => {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
 }
 
@@ -870,38 +932,6 @@ const generateLinePoints = (data: number[]) => {
   color: #64748b;
   font-size: 1rem;
   margin: 0;
-}
-
-.search-container {
-  min-width: 300px;
-}
-
-.search-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  color: #9ca3af;
-  z-index: 1;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 10px 12px 10px 40px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  background-color: white;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.search-box input:focus {
-  border-color: #3b82f6;
 }
 
 .stats-section {
@@ -1138,6 +1168,40 @@ const generateLinePoints = (data: number[]) => {
   padding-right: 16.67px;
 }
 
+/* Tooltip Styles */
+.chart-tooltip {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tooltip-content {
+  text-align: center;
+}
+
+.tooltip-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.tooltip-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.tooltip-month {
+  font-size: 11px;
+  color: #d1d5db;
+  margin-top: 2px;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .main-content {
@@ -1156,10 +1220,6 @@ const generateLinePoints = (data: number[]) => {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
-  }
-  
-  .search-container {
-    min-width: auto;
   }
 }
 
